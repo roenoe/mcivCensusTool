@@ -1,0 +1,41 @@
+-- Enable foreign keys in SQLite
+PRAGMA foreign_keys = ON;
+
+-- Table `census`
+CREATE TABLE IF NOT EXISTS census (
+  id INTEGER PRIMARY KEY,
+  activeid INTEGER NOT NULL,
+  number INTEGER NOT NULL,
+  userid INTEGER NOT NULL,
+  turn INTEGER NOT NULL,
+  UNIQUE (id)
+);
+
+-- Table `active`
+CREATE TABLE IF NOT EXISTS active (
+  id INTEGER PRIMARY KEY,
+  civid INTEGER NOT NULL,
+  military INTEGER NOT NULL,
+  userid INTEGER NOT NULL,
+  UNIQUE (id),
+  FOREIGN KEY (id) REFERENCES census (activeid) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Table `user`
+CREATE TABLE IF NOT EXISTS user (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  turn INTEGER,
+  UNIQUE (id),
+  FOREIGN KEY (id) REFERENCES census (userid) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (id) REFERENCES active (userid) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Table `civ`
+CREATE TABLE IF NOT EXISTS civ (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  number INTEGER NOT NULL,
+  UNIQUE (id),
+  FOREIGN KEY (id) REFERENCES active (civid) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
