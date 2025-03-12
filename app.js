@@ -32,6 +32,42 @@ for (var i = 0; i < pathstocheck.length; i++) {
   })
 }
 
+// Login function
+app.post('/login', async (req, res) => {
+  // Define variables from form for comparison
+  const { username, password } = req.body
+  let match = false
+
+  // Get user from database
+  const userid = sql.getid(username)
+  if (!userid) {
+    return res.status(401).send('Invalid username or password')
+  }
+  const user = sql.getuser(userid) //DEFINE FUNCTION
+
+  // Check if password matches
+  if (password === user.password) {
+    match = true
+  } else {
+    match = false
+    console.log("Invalid password")
+  }
+
+  // Save login info in session
+  if (match) {
+    console.log("Logged in")
+    req.session.loggedin = true
+    req.session.username = user.name
+    req.session.userid = user.id
+    req.session.userturn = user.turn
+  }
+
+  // Redirect user to home page
+  return res.redirect('/')
+})
+
+
+// Function for checking whether user is logged in
 function checkloggedin(req, res, next) {
   if (req.session.loggedin) {
     console.log('Logged in')
@@ -48,6 +84,11 @@ app.get('/logout', checkloggedin, (req, res) => {
   res.redirect('/')
 })
 
+// Username fetch function
+app.get('/fetchusername', checkloggedin, (req, res) => {
+  let username = { username: req.session.username }
+  res.send(username)
+})
 
 app.use(express.static(staticPath))
 const serverport = 21570
