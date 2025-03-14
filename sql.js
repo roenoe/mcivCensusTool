@@ -22,3 +22,10 @@ export function getuser(userid) {
   }
   return response[0]
 }
+
+export function getcivs() {
+  const sqltext = 'select id, name, number from civ'
+  const sql = db.prepare(sqltext)
+  const response = sql.all()
+  return response
+}

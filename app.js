@@ -43,7 +43,7 @@ app.post('/login', async (req, res) => {
   if (!userid) {
     return res.status(401).send('Invalid username or password')
   }
-  const user = sql.getuser(userid) //DEFINE FUNCTION
+  const user = sql.getuser(userid)
 
   // Check if password matches
   if (password === user.password) {
@@ -78,16 +78,25 @@ function checkloggedin(req, res, next) {
   }
 }
 
+// User fetch function
+app.get('/fetchuser', checkloggedin, (req, res) => {
+  let username = {
+    username: req.session.username,
+    userturn: req.session.userturn
+  }
+  res.send(username)
+})
+
+// Civ list fetch funtion
+app.get('/fetchcivs', checkloggedin, (req, res) => {
+  const civs = sql.getcivs() // DEFINE FUNCTION
+  res.send(civs)
+})
+
 // Logout function
 app.get('/logout', checkloggedin, (req, res) => {
   req.session.destroy()
   res.redirect('/')
-})
-
-// Username fetch function
-app.get('/fetchusername', checkloggedin, (req, res) => {
-  let username = { username: req.session.username }
-  res.send(username)
 })
 
 app.use(express.static(staticPath))
