@@ -89,7 +89,7 @@ app.get('/fetchuser', checkloggedin, (req, res) => {
 
 // Civ list fetch funtion
 app.get('/fetchcivs', checkloggedin, (req, res) => {
-  const civs = sql.getcivs() // DEFINE FUNCTION
+  const civs = sql.getcivs()
   res.send(civs)
 })
 
@@ -98,6 +98,21 @@ app.get('/logout', checkloggedin, (req, res) => {
   req.session.destroy()
   res.redirect('/')
 })
+
+
+// Civ activation function
+app.post('/activateciv', checkloggedin, (req, res) => {
+  const { civid } = req.body
+
+  const civ = sql.activateciv(civid, req.session.userid)
+
+  if (!civ) {
+    return res.json({ error: 'Failed to activate civ' })
+  } else {
+    return res.json({ message: 'Activated civ', civid: civid })
+  }
+})
+
 
 app.use(express.static(staticPath))
 const serverport = 21570

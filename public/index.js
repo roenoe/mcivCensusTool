@@ -1,5 +1,6 @@
 const welcome = document.getElementById("welcome")
 let user = []
+let togglecivs = []
 
 fetchuser()
 async function fetchuser() {
@@ -38,11 +39,49 @@ function displaycivselection(civs) {
   civs.forEach(civ => {
     const row = document.createElement('tr')
     row.innerHTML = `
-      <td>${civ.name}</td>
+      <td>${civ.number} ${civ.name}</td>
+      <td>
+        <button class="inline inline-block;" onclick="toggleciv(${civ.id})">Toggle whether this civ is in the game</button>
+      </td>
     `
     civselectiontable.appendChild(row)
 
   })
 }
 
-//        <td><button onclick="promoteUser(${person.userid})" class="green">Promote</button></td>
+function toggleciv(civid) {
+  let exists = false
+  let location = ""
+  for (var i = 0; togglecivs.length; i++) {
+    if (togglecivs[i] == civid) {
+      exists = true
+      location = i
+    }
+  }
+  if (exists) {
+    togglecivs.splice(location, 1)
+  } else {
+    togglecivs.push(civid)
+  }
+}
+
+function activatecivs() {
+  for (var i = 0; togglecivs.length; i++) {
+    activateciv(togglecivs[i])
+  }
+}
+
+
+async function activateciv(civid) {
+  try {
+    await fetch('/activateciv', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ civid: civid })
+    })
+  } catch (error) {
+    console.log("Error", error)
+  }
+}
