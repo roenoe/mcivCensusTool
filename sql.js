@@ -31,11 +31,15 @@ export function getcivs() {
   return response
 }
 
+function getcivid(civnumber) {
+  const sqltext = 'select id from civ where number = ?'
+  const sql = db.prepare(sqltext)
+  const response = sql.all(civnumber)
+  return response
+}
+
 export function activateciv(civnumber, userid) {
-  const sqlquerytext = 'select id from civ where number = ?'
-  const sqlquery = db.prepare(sqlquerytext)
-  const queryresponse = sqlquery.all(civnumber)
-  let civid = queryresponse
+  let civid = getcivid(civnumber)
 
   const sqltext = 'insert into active columns (civid, userid, military) values (?, ?, ?)'
   const sql = db.prepare(sqltext)
