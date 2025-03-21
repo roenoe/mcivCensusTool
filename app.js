@@ -93,6 +93,12 @@ app.get('/fetchcivs', checkloggedin, (req, res) => {
   res.send(civs)
 })
 
+// Active table for current user fetch function
+app.get('/fetchactive', checkloggedin, (req, res) => {
+  const active = sql.getactive(req.session.userid)
+  res.send(active)
+})
+
 // Logout function
 app.get('/logout', checkloggedin, (req, res) => {
   req.session.destroy()
@@ -102,9 +108,10 @@ app.get('/logout', checkloggedin, (req, res) => {
 
 // Civ activation function
 app.post('/activateciv', checkloggedin, (req, res) => {
+  let userid = req.session.userid
   const { civid } = req.body
 
-  const civ = sql.activateciv(civid, req.session.userid)
+  const civ = sql.activateciv(civid, userid)
 
   if (!civ) {
     return res.json({ error: 'Failed to activate civ' })

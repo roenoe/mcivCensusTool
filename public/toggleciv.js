@@ -1,13 +1,28 @@
 let togglecivs = []
 
-fetchuser()
+fetchactive()
+async function fetchactive() {
+  try {
+    let response = await fetch('/fetchactive')
+    let data = await response.json()
+
+    console.log(data)
+    if (!data) {
+      fetchcivs()
+    }
+
+  } catch (error) {
+    console.log("Error:", error)
+  }
+}
+
+//fetchuser()
 async function fetchuser() {
   try {
     let response = await fetch('/fetchuser')
     let data = await response.json()
 
     if (data.userturn == 1) { // CHECK FOR WHETHER USER HAS CHOSEN CIVS YET IN A BETTER WAY
-      fetchcivs()
     }
 
   } catch (error) {
@@ -62,7 +77,7 @@ function toggleciv(btnid, civid) {
 }
 
 function activatecivs() {
-  for (var i = 0; togglecivs.length; i++) {
+  for (var i = 0; i < togglecivs.length; i++) {
     activateciv(togglecivs[i])
   }
 }

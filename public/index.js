@@ -1,5 +1,4 @@
 const welcome = document.getElementById("welcome")
-const civselection = document.getElementById("civselection")
 let user = []
 
 fetchuser()
