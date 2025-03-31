@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import sqlite3 from 'better-sqlite3'
 import { query } from 'express'
-const db = sqlite3('./db/mciv.db')
+const db = sqlite3('./db/database.db')
 
 
 export function getid(username) {
@@ -25,7 +25,7 @@ export function getuser(userid) {
 }
 
 export function getcivs() {
-  const sqltext = 'select id, name, number from civ'
+  const sqltext = 'select id, name from civ'
   const sql = db.prepare(sqltext)
   const response = sql.all()
   return response
@@ -41,16 +41,7 @@ export function getactive(userid) {
   return response
 }
 
-function getcivid(civnumber) {
-  const sqltext = 'select id from civ where number = ?'
-  const sql = db.prepare(sqltext)
-  const response = sql.all(civnumber)
-  return response
-}
-
-export function activateciv(civnumber, userid) {
-  let civid = getcivid(civnumber)
-
+export function activateciv(civid, userid) {
   const sqltext = 'insert into active (civid, userid, military) values (?, ?, ?)'
   const sql = db.prepare(sqltext)
   const response = sql.run(civid, userid, 0)

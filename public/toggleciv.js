@@ -1,4 +1,5 @@
 let togglecivs = []
+let civs = []
 
 fetchactive()
 async function fetchactive() {
@@ -16,45 +17,57 @@ async function fetchactive() {
   }
 }
 
-//fetchuser()
-async function fetchuser() {
-  try {
-    let response = await fetch('/fetchuser')
-    let data = await response.json()
-
-    if (data.userturn == 1) { // CHECK FOR WHETHER USER HAS CHOSEN CIVS YET IN A BETTER WAY
-    }
-
-  } catch (error) {
-    console.log("Error:", error)
-  }
-}
-
 async function fetchcivs() {
   try {
     let response = await fetch('/fetchcivs')
     let data = await response.json()
+    civs = data
 
-    displaycivselection(data)
+    displaycivselection()
   } catch (error) {
     console.log("Error", error)
   }
 }
 
-function displaycivselection(civs) {
-  const civselectiontable = document.getElementById('civselectiontable')
-  civselectiontable.innerHTML = '<tr><th>Civilization</th><th>Button</th></tr>' // Empty the table
+function displaycivselection() {
+  const civselection = document.getElementById('civselection')
+  civselection.innerHTML = `
+    <h2>Select Civilizations for your game</h2>
+
+    <table id="civselectiontable">
+      <tr>
+        <th>Civilization</th>
+        <th>Button <button onclick="toggleall()">Toggle all</button></th>
+      </tr>
+    </table>
+
+    <button onclick="activatecivs()">Submit these civs as your active civs</button>
+    ` // Empty the table
+
+  displaycivselectionelements()
+}
+function displaycivselectionelements() {
 
   civs.forEach(civ => {
     const row = document.createElement('tr')
     row.innerHTML = `
-      <td>${civ.number} ${civ.name}</td>
+      <td>${civ.id} ${civ.name}</td>
       <td>
         <button id="${civ.name}-btn" onclick="toggleciv('${civ.name}-btn', ${civ.id})">Toggle civ</button>
       </td>
     `
-    civselectiontable.appendChild(row)
 
+    civselectiontable.appendChild(row)
+  })
+}
+
+function toggleall() {
+  console.log(civs)
+
+  civs.forEach(civ => {
+    const btn = civ.name + "-btn"
+    console.log(btn, civ.id)
+    toggleciv(btn, civ.id)
   })
 }
 
