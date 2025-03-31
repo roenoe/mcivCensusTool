@@ -32,7 +32,10 @@ export function getcivs() {
 }
 
 export function getactive(userid) {
-  const sqltext = 'select id, civid, military from active where userid = ?'
+  const sqltext = ' select active.id, civid, military, name from active ' +
+    ' inner join civ on active.civid = civ.id ' +
+    ' where userid = ? ' +
+    ' order by civid '
   const sql = db.prepare(sqltext)
   const response = sql.all(userid)
   if (response.length == 0) {

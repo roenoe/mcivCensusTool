@@ -7,7 +7,6 @@ async function fetchactive() {
     let response = await fetch('/fetchactive')
     let data = await response.json()
 
-    console.log(data)
     if (!data) {
       fetchcivs()
     }
@@ -62,11 +61,9 @@ function displaycivselectionelements() {
 }
 
 function toggleall() {
-  console.log(civs)
 
   civs.forEach(civ => {
     const btn = civ.name + "-btn"
-    console.log(btn, civ.id)
     toggleciv(btn, civ.id)
   })
 }
@@ -89,10 +86,11 @@ function toggleciv(btnid, civid) {
   }
 }
 
-function activatecivs() {
-  for (var i = 0; i < togglecivs.length; i++) {
-    activateciv(togglecivs[i])
+async function activatecivs() {
+  for (var i = 0; i <= togglecivs.length; i++) {
+    await activateciv(togglecivs[i])
   }
+  location.reload()
 }
 
 
