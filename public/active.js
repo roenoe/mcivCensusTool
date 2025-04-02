@@ -1,5 +1,18 @@
 let actives = []
 
+
+async function fetchuser() {
+  try {
+    let response = await fetch('/fetchuser')
+    let data = await response.json()
+
+    user = data
+
+  } catch (error) {
+    console.log("Error:", error)
+  }
+}
+
 fetchactive()
 async function fetchactive() {
   try {
@@ -46,7 +59,7 @@ function displayactiveselectionelements() {
         ${active.civid} ${active.name}
       </td>
       <td>
-        <input type="text" id="${active.name}-field" name="population">
+        <input type="number" id="${active.name}-field" name="population">
       </td>
       <td>
         button
@@ -59,24 +72,42 @@ function displayactiveselectionelements() {
 
 let topush = []
 async function calculatecensus() {
-  let empty = false
+  topush = []
+  await fetchuser()
 
   for (var i = 0; i < actives.length; i++) {
     const field = document.getElementById(`${actives[i].name}-field`)
-    if (field.value == "") { empty = true }
-    const number = field.value
+    const number = parseInt(field.value)
 
     topush.push({
       activeid: actives[i].id,
       number: number
-      //, turn?
     })
   }
-  //if (empty = true) { topush = [] }
-  console.log(empty)
+  if (check()) {
+    senddata()
+  }
   console.log(topush)
-  // for loop with number of items in active
-  // send census numbers from fields
+  alert("fasdfas")
+}
+
+function check() {
+  var alert = false
+  var validnumalert = false
+  for (var i = 0; i < topush.length; i++) {
+    if (Number.isNaN(topush[i].number)) {
+      alert = true
+    } //else if (topush[i].number < 0 > 55
+    if (alert) {
+      alert("Please fill in all the fields, and only use numbers")
+      return false
+    }
+  }
+  return true
+}
+
+function senddata() {
+  // Send census info
   // send turn number
   // increment turn
   //location.reload()
