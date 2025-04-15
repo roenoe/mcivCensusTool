@@ -99,6 +99,13 @@ app.get('/fetchactive', checkloggedin, (req, res) => {
   res.send(active)
 })
 
+// Census fetch function
+app.get('/fetchlastcensus', checkloggedin, (req, res) => {
+const userid = req.session.userid
+const turn = req.session.userturn - 1
+const lastcensus = sql.getlastcensus(userid, turn)
+res.send(lastcensus)
+
 // Logout function
 app.get('/logout', checkloggedin, (req, res) => {
   req.session.destroy()
@@ -119,6 +126,37 @@ app.post('/activateciv', checkloggedin, (req, res) => {
     return res.json({ message: 'Activated civ', civid: civid })
   }
 })
+
+// Census activation function
+app.post('/activatecensus', checkloggedin, (req, res) => {
+  let turn = req.session.userturn
+  let activeid = req.body.activeid
+  let number = req.body.number
+
+  const census = sql.activatecensus(activeid, turn, number)
+
+  if (!census) {
+    return res.json({ error: 'Failed to activate census' })
+  } else {
+    return res.json({ message: 'Activated census', activeid: activeid })
+  }
+})
+
+// Turn increment function
+app.post('/incrementturn', checkloggedin, (req, res) => {
+  let userid = req.session.userid
+  let userturn = req.session.userturn
+
+  const increment = sql.incrementturn(userid, userturn)
+
+  if (!increment) {
+    return res.json({ error: 'Failed to increment turn' })
+  } else {
+    return res.json({ message: 'Incremented turn', userturn: userturn + 1 })
+  }
+})
+
+
 
 
 app.use(express.static(staticPath))

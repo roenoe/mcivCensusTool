@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt'
 import sqlite3 from 'better-sqlite3'
-import { query } from 'express'
+//import { query } from 'express'
+import pkg from 'express'
+const { query } = pkg
 const db = sqlite3('./db/database.db')
 
 
@@ -44,9 +46,38 @@ export function getactive(userid) {
   return response
 }
 
+export function getlastcensus(userid, turn) {
+  const sqltext = 'select * from census ' +
+    ' inner join active on activeid = active.id ' +
+    ' inner join civ on active.civid = civ.id ' +
+    ' where userid = ? ' +
+    ' where turn = ? '
+  const sql = db.prepare(sqltext)
+  const response = sql.all(userid, turn)
+  if (response.length == 0) {
+    return false
+  }
+  return response
+}
+
 export function activateciv(civid, userid) {
   const sqltext = 'insert into active (civid, userid, military) values (?, ?, ?)'
   const sql = db.prepare(sqltext)
   const response = sql.run(civid, userid, 0)
   return response
 }
+
+export function activatecensus(activeid, turn, number) {
+  const sqltext = 'insert into census (activeid, number, turn) values (?, ?, ?)'
+  const sql = db.prepare(sqltext)
+  const response = sql.run(activeid, number, turn)
+  return response
+}
+
+export function incrementturn(userid, turn) {
+  const sqltext = 'update user set turn = ? where id = ?'
+  const sql = db.prepare(sqltext)
+  const response = sql.run(turn + 1, userid)
+  return response
+}
+

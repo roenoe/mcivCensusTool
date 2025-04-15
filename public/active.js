@@ -84,31 +84,62 @@ async function calculatecensus() {
       number: number
     })
   }
-  if (check()) {
-    senddata()
+  if (await check()) {
+    await sendcensuses()
   }
   console.log(topush)
-  alert("fasdfas")
 }
 
-function check() {
-  var alert = false
-  var validnumalert = false
+async function check() {
   for (var i = 0; i < topush.length; i++) {
+    // Check if number at all
     if (Number.isNaN(topush[i].number)) {
-      alert = true
-    } //else if (topush[i].number < 0 > 55
-    if (alert) {
       alert("Please fill in all the fields, and only use numbers")
+      return false
+    }
+    // Check valid number
+    if (topush[i].number < 0 || topush[i].number > 55) {
+      alert("Please use a valid number. Valid numbers are between 1-55 (inclusive)")
       return false
     }
   }
   return true
 }
 
-function senddata() {
-  // Send census info
-  // send turn number
-  // increment turn
-  //location.reload()
+async function sendcensuses() {
+  for (var i = 0; i < topush.length; i++) {
+    await sendcensus(topush[i])
+  }
+  await incrementturn()
+  location.reload()
+}
+
+async function sendcensus(data) {
+  try {
+    await fetch('/activatecensus', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        activeid: data.activeid,
+        number: data.number
+      })
+    })
+  } catch (error) {
+    console.log("Error", error)
+  }
+}
+
+async function incrementturn() {
+  try {
+    await fetch('/incrementturn', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+    })
+  } catch (error) {
+    console.log("Erorr", error)
+  }
 }
