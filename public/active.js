@@ -61,13 +61,40 @@ function displayactiveselectionelements() {
       <td>
         <input type="number" id="${active.name}-field" name="population">
       </td>
+    `
+    if (active.military) {
+      row.innerHTML += `
+        <td>
+          <button id="${active.id}-btn" class="green" onclick='togglemilitary("${active.id}-btn", ${active.id})'>Toggle Military</button>
+        </td>
+      `
+    } else {
+      row.innerHTML += `
       <td>
-        button
+        <button id="${active.id}-btn" onclick='togglemilitary("${active.id}-btn", ${active.id})'>Toggle Military</button>
       </td>
     `
+    }
 
     activeselectiontable.appendChild(row)
   })
+}
+
+async function togglemilitary(btnid, activeid) {
+  let btn = document.getElementById(btnid)
+  btn.classList.toggle("green")
+
+  try {
+    await fetch('/togglemilitary', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ activeid: activeid })
+    })
+  } catch (error) {
+    console.log("Error", error)
+  }
 }
 
 let topush = []

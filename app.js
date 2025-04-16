@@ -101,10 +101,11 @@ app.get('/fetchactive', checkloggedin, (req, res) => {
 
 // Census fetch function
 app.get('/fetchlastcensus', checkloggedin, (req, res) => {
-const userid = req.session.userid
-const turn = req.session.userturn - 1
-const lastcensus = sql.getlastcensus(userid, turn)
-res.send(lastcensus)
+  const userid = req.session.userid
+  const turn = req.session.userturn - 1
+  const lastcensus = sql.getlastcensus(userid, turn)
+  res.send(lastcensus)
+})
 
 // Logout function
 app.get('/logout', checkloggedin, (req, res) => {
@@ -124,6 +125,20 @@ app.post('/activateciv', checkloggedin, (req, res) => {
     return res.json({ error: 'Failed to activate civ' })
   } else {
     return res.json({ message: 'Activated civ', civid: civid })
+  }
+})
+
+// Active toggle military function
+app.post('/togglemilitary', checkloggedin, (req, res) => {
+  const { activeid } = req.body
+
+  const toggled = sql.togglemilitary(activeid)
+  console.log(toggled)
+
+  if (!toggled) {
+    return res.json({ error: 'Failed to toggle military' })
+  } else {
+    return res.json({ message: 'Toggled military', activeid: activeid })
   }
 })
 
@@ -152,6 +167,7 @@ app.post('/incrementturn', checkloggedin, (req, res) => {
   if (!increment) {
     return res.json({ error: 'Failed to increment turn' })
   } else {
+    req.session.userturn += 1
     return res.json({ message: 'Incremented turn', userturn: userturn + 1 })
   }
 })

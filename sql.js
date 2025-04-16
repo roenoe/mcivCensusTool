@@ -47,11 +47,11 @@ export function getactive(userid) {
 }
 
 export function getlastcensus(userid, turn) {
-  const sqltext = 'select * from census ' +
+  const sqltext = 'select civid, name, number, military from census ' +
     ' inner join active on activeid = active.id ' +
     ' inner join civ on active.civid = civ.id ' +
     ' where userid = ? ' +
-    ' where turn = ? '
+    ' and turn = ? '
   const sql = db.prepare(sqltext)
   const response = sql.all(userid, turn)
   if (response.length == 0) {
@@ -79,5 +79,25 @@ export function incrementturn(userid, turn) {
   const sql = db.prepare(sqltext)
   const response = sql.run(turn + 1, userid)
   return response
+}
+
+export function togglemilitary(activeid) {
+  const sqltext = 'update active set military = ? where id = ?'
+  const sql = db.prepare(sqltext)
+  let response = ""
+  if (checkmilitarystatus(activeid)) {
+    response = sql.run(0, activeid)
+    console.log("Happen")
+  } else {
+    response = sql.run(1, activeid)
+  }
+  return response
+}
+
+function checkmilitarystatus(activeid) {
+  const sqltext = 'select military from active where id = ?'
+  const sql = db.prepare(sqltext)
+  const response = sql.all(activeid)
+  return response[0].military
 }
 

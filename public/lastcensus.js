@@ -1,5 +1,6 @@
 let lastcensus = []
 
+fetchlastcensus()
 async function fetchlastcensus() {
   try {
     let response = await fetch('/fetchlastcensus')
@@ -17,12 +18,56 @@ async function fetchlastcensus() {
 }
 
 function displaylastcensus() {
-  calculatecensus()
+  calculatelastcensus()
   const lastcensus = document.getElementById("lastcensus")
+
+  lastcensus.innerHTML = `
+    <h2>This is the order in which civilizations should move on the board</h2>
+
+    <table id="lastcensustable">
+      <tr>
+        <th>Civilization</th>
+        <th>Census</th>
+        <th>Military</th>
+      </tr>
+    </table>
+  `
+
+  displaylastcensuselements()
 }
 
-function calculatecensus() {
-  // SORT BY POP
-  // SORT BY CIV NUMBER
-  // SORT BY MILITARY
+function calculatelastcensus() {
+  // Sort by military (ascending)
+  lastcensus.sort((a, b) => {
+    if (a.military !== b.military) {
+      return a.military - b.military;
+    }
+    // Then by number (descending)
+    if (a.number !== b.number) {
+      return b.number - a.number;
+    }
+    // Then by civid (ascending)
+    return a.civid - b.civid;
+  })
+}
+
+function displaylastcensuselements() {
+  const lastcensustable = document.getElementById("lastcensustable")
+
+  lastcensus.forEach(censusentry => {
+    const row = document.createElement('tr')
+    row.innerHTML = `
+      <td>
+        ${censusentry.civid} ${censusentry.name}
+      </td>
+      <td>
+        ${censusentry.number}
+      </td>
+      <td>
+        ${censusentry.military}
+      </td>
+    `
+
+    lastcensustable.appendChild(row)
+  })
 }
