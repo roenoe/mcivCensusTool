@@ -54,6 +54,7 @@ function displayactiveselectionelements() {
 
   actives.forEach(active => {
     const row = document.createElement('tr')
+    row.className = active.name
     row.innerHTML = `
       <td>
         ${active.civid} ${active.name}
@@ -65,13 +66,13 @@ function displayactiveselectionelements() {
     if (active.military) {
       row.innerHTML += `
         <td>
-          <button id="${active.id}-btn" class="green" onclick='togglemilitary("${active.id}-btn", ${active.id})'>Toggle Military</button>
+          <button id="${active.id}-btn" class="green" onclick='togglemilitary("${active.id}-btn", ${active.id})'>Military</button>
         </td>
       `
     } else {
       row.innerHTML += `
       <td>
-        <button id="${active.id}-btn" onclick='togglemilitary("${active.id}-btn", ${active.id})'>Toggle Military</button>
+        <button id="${active.id}-btn" onclick='togglemilitary("${active.id}-btn", ${active.id})'>Military</button>
       </td>
     `
     }
@@ -124,9 +125,15 @@ async function check() {
       alert("Please fill in all the fields, and only use numbers")
       return false
     }
+
+    // Make negative number positive
+    if (topush[i].number < 0 && topush[i].number >= -55) {
+      topush[i].number += 55
+    }
+
     // Check valid number
     if (topush[i].number < 0 || topush[i].number > 55) {
-      alert("Please use a valid number. Valid numbers are between 1-55 (inclusive)")
+      alert("Please use a valid number. Valid numbers are between (-55) and 55 (inclusive)")
       return false
     }
   }

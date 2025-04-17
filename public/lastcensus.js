@@ -22,7 +22,9 @@ function displaylastcensus() {
   const lastcensus = document.getElementById("lastcensus")
 
   lastcensus.innerHTML = `
-    <h2>This is the order in which civilizations should move on the board</h2>
+    <h2>
+      This is the order in which civs should move
+    </h2>
 
     <table id="lastcensustable">
       <tr>
@@ -55,7 +57,13 @@ function displaylastcensuselements() {
   const lastcensustable = document.getElementById("lastcensustable")
 
   lastcensus.forEach(censusentry => {
+    if (censusentry.military == 0) {
+      censusentry.military = "No"
+    } else {
+      censusentry.military = "Yes"
+    }
     const row = document.createElement('tr')
+    row.className = censusentry.name
     row.innerHTML = `
       <td>
         ${censusentry.civid} ${censusentry.name}

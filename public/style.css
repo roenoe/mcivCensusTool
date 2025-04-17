@@ -1,7 +1,15 @@
+body {
+  background-color: #333333;
+  color: white;
+  font-weight: bold;
+}
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
-  width: 100%;
+  width: 75%;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 td,
@@ -11,9 +19,9 @@ th {
   padding: 4px;
 }
 
-tr:nth-child(even) {
+/*tr:nth-child(even) {
   background-color: #dddddd;
-}
+}*/
 
 .destruct {
   background-color: red;
@@ -24,4 +32,94 @@ tr:nth-child(even) {
 
 .green {
   background-color: green;
+}
+
+.Minoa {
+  background-color: #BDCF01;
+  color: #000000;
+}
+
+.Saba {
+  background-color: #FF6A14;
+  color: #FFFFFF;
+}
+
+.Assyria {
+  background-color: #A3D8E2;
+  color: #000000;
+}
+
+.Maurya {
+  background-color: #DD4343;
+  color: #FFFFFF;
+}
+
+.Celt {
+  background-color: #16C345;
+  color: #000000;
+}
+
+.Babylon {
+  background-color: #A7A9AB;
+  color: #FFFFFF;
+}
+
+.Carthage {
+  background-color: #FE9016;
+  color: #000000;
+}
+
+.Dravidia {
+  background-color: #0A2A8A;
+  color: #FFFFFF;
+}
+
+.Hatti {
+  background-color: #E8AFCE;
+  color: #000000;
+}
+
+.Kushan {
+  background-color: #9C422C;
+  color: #FFFFFF;
+}
+
+.Rome {
+  background-color: #EC008D;
+  color: #000000;
+}
+
+.Persia {
+  background-color: #5F43B7;
+  color: #FFFFFF;
+}
+
+.Iberia {
+  background-color: #FFFFFF;
+  color: #000000;
+}
+
+.Nubia {
+  background-color: #00B1B7;
+  color: #FFFFFF;
+}
+
+.Hellas {
+  background-color: #F5EE2A;
+  color: #000000;
+}
+
+.Indus {
+  background-color: #3F8D43;
+  color: #FFFFFF;
+}
+
+.Egypt {
+  background-color: #F7E6DE;
+  color: #000000;
+}
+
+.Parthia {
+  background-color: #847C49;
+  color: #FFFFFF;
 }

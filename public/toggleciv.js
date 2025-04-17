@@ -49,6 +49,7 @@ function displaycivselectionelements() {
 
   civs.forEach(civ => {
     const row = document.createElement('tr')
+    row.className = civ.name
     row.innerHTML = `
       <td>${civ.id} ${civ.name}</td>
       <td>
