@@ -76,7 +76,9 @@ app.post('/signup', async (req, res) => {
   }
 
   // Generate user in sql
-  sql.genuser(username, password)
+  if (!sql.genuser(username, password)) {
+    return res.errored
+  }
 
   // Redirect user to login page
   return res.redirect('/login.html')

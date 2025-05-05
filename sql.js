@@ -26,6 +26,17 @@ export function getuser(userid) {
   return response[0]
 }
 
+export function genuser(username, password) {
+  if (getid(username)) {
+    return false
+  }
+
+  const sqltext = 'insert into user (name, turn, password) values (?, ?, ?)'
+  const sql = db.prepare(sqltext)
+  const response = sql.run(username, 0, password)
+  return response
+}
+
 export function getcivs() {
   const sqltext = 'select id, name from civ'
   const sql = db.prepare(sqltext)
