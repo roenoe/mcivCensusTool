@@ -66,6 +66,22 @@ app.post('/login', async (req, res) => {
   return res.redirect('/')
 })
 
+// Signup function
+app.post('/signup', async (req, res) => {
+  const { username, password } = req.body
+
+  // Check if user already exists
+  if (sql.getid(username)) {
+    res.status(409).send('Username already taken')
+  }
+
+  // Generate user in sql
+  sql.genuser(username, password)
+
+  // Redirect user to login page
+  return res.redirect('/login.html')
+})
+
 
 // Function for checking whether user is logged in
 function checkloggedin(req, res, next) {

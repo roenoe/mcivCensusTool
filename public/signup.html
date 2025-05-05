@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+  <meta charset=UTF-8>
+  <meta name="viewport" content="width=device-width" , initial-scale=1.0">
+  <title>MCIV Census Tool</title>
+</head>
+
+<body>
+
+  <h1>Sign up</h1>
+  <div id="signup">
+    <form id="signupform" action="/signup" method="POST">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+
+      <label for="passwordConfirm">Confirm Password</label>
+      <input type="password" id="passwordConfirm" name="passwordConfirm" required>
+
+      <button type="submit">Log in</button>
+    </form>
+  </div>
+
+  <p>
+    Already have a user?
+    <a href="./login.html">Log in</a>
+  </p>
+
+</body>
+
+<script>
+  document.getElementById("signupform").addEventListener('submit', function (e) {
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+    if (password !== passwordConfirm) {
+      e.preventDefault(); // Prevent form submission
+      alert('Passwords do not match!');
+    }
+  });
+</script>
+
+</html>
