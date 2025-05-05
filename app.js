@@ -2,6 +2,7 @@ import * as sql from './sql.js'
 
 import express from 'express';
 import session from 'express-session';
+import bcrypt from 'bcrypt'
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -46,12 +47,18 @@ app.post('/login', async (req, res) => {
   const user = sql.getuser(userid)
 
   // Check if password matches
-  if (password === user.password) {
+  if (await bcrypt.compare(password, user.password)) {
     match = true
   } else {
     match = false
     console.log("Invalid password")
   }
+  //if (password === user.password) {
+  //  match = true
+  //} else {
+  //  match = false
+  //  console.log("Invalid password")
+  //}
 
   // Save login info in session
   if (match) {
@@ -60,6 +67,8 @@ app.post('/login', async (req, res) => {
     req.session.username = user.name
     req.session.userid = user.id
     req.session.userturn = user.turn
+  } else {
+    return res.status(401).send('Invalid username or password')
   }
 
   // Redirect user to home page
@@ -70,13 +79,17 @@ app.post('/login', async (req, res) => {
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body
 
+  const saltrounds = 10
+  const salt = bcrypt.genSaltSync(saltrounds)
+  const hash = bcrypt.hashSync(password, salt)
+
   // Check if user already exists
   if (sql.getid(username)) {
     res.status(409).send('Username already taken')
   }
 
   // Generate user in sql
-  if (!sql.genuser(username, password)) {
+  if (!sql.genuser(username, hash)) {
     return res.errored
   }
 

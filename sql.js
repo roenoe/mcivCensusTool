@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt'
 import sqlite3 from 'better-sqlite3'
 //import { query } from 'express'
 import pkg from 'express'
