@@ -26,12 +26,27 @@ app.use(session({
 const pathstocheck = [
   '/',
   '/index.html',
+  '/admin.html',
 ]
 for (var i = 0; i < pathstocheck.length; i++) {
+  console.log("Checking path:", pathstocheck[i])
   app.get(pathstocheck[i], checkloggedin, (req, res) => {
     return res.sendFile(path.join(staticPath))
   })
 }
+
+
+// Make sure the user is admin
+const pathstocheckadmin = [
+  '/admin.html',
+]
+for (var i = 0; i < pathstocheckadmin.length; i++) {
+  console.log("Checking path:", pathstocheckadmin[i])
+  app.get(pathstocheckadmin[i], checkadmin, (req, res) => {
+    return res.sendFile(path.join(staticPath))
+  })
+}
+
 
 // Login function
 app.post('/login', async (req, res) => {
@@ -53,12 +68,6 @@ app.post('/login', async (req, res) => {
     match = false
     console.log("Invalid password")
   }
-  //if (password === user.password) {
-  //  match = true
-  //} else {
-  //  match = false
-  //  console.log("Invalid password")
-  //}
 
   // Save login info in session
   if (match) {
@@ -67,6 +76,7 @@ app.post('/login', async (req, res) => {
     req.session.username = user.name
     req.session.userid = user.id
     req.session.userturn = user.turn
+    req.session.admin = user.admin
   } else {
     return res.status(401).send('Invalid username or password')
   }
@@ -106,6 +116,17 @@ function checkloggedin(req, res, next) {
   } else {
     console.log('Not logged in')
     return res.redirect('/login.html')
+  }
+}
+
+// Function for checking whether user is admin
+function checkadmin(req, res, next) {
+  if (req.session.admin) {
+    console.log('Admin')
+    return next()
+  } else {
+    console.log('Not admin')
+    return res.status(403).send('You need to be an administrator to see this page')
   }
 }
 
@@ -205,7 +226,7 @@ app.post('/incrementturn', checkloggedin, (req, res) => {
 
 
 
-
 app.use(express.static(staticPath))
+
 const serverport = 21570
 app.listen(serverport, () => console.log('Server running on http://127.0.0.1:' + serverport))

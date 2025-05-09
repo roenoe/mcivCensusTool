@@ -16,7 +16,7 @@ export function getid(username) {
 }
 
 export function getuser(userid) {
-  const sqltext = 'select id, name, password, turn from user where id = ?'
+  const sqltext = 'select id, name, password, turn, admin from user where id = ?'
   const sql = db.prepare(sqltext)
   const response = sql.all(userid)
   if (response.length == 0) {
