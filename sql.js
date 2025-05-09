@@ -30,9 +30,9 @@ export function genuser(username, password) {
     return false
   }
 
-  const sqltext = 'insert into user (name, turn, password) values (?, ?, ?)'
+  const sqltext = 'insert into user (name, turn, password, admin) values (?, ?, ?, ?)'
   const sql = db.prepare(sqltext)
-  const response = sql.run(username, 0, password)
+  const response = sql.run(username, 0, password, 0)
   return response
 }
 
