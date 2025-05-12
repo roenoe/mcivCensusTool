@@ -25,14 +25,14 @@ export function getuser(userid) {
   return response[0]
 }
 
-export function genuser(username, password) {
+export function genuser(username, password, cookies) {
   if (getid(username)) {
     return false
   }
 
-  const sqltext = 'insert into user (name, turn, password, admin) values (?, ?, ?, ?)'
+  const sqltext = 'insert into user (name, turn, password, admin, cookies) values (?, ?, ?, ?, ?)'
   const sql = db.prepare(sqltext)
-  const response = sql.run(username, 0, password, 0)
+  const response = sql.run(username, 0, password, 0, cookies)
   return response
 }
 

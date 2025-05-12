@@ -87,7 +87,7 @@ app.post('/login', async (req, res) => {
 
 // Signup function
 app.post('/signup', async (req, res) => {
-  const { username, password } = req.body
+  const { username, password, cookies } = req.body
 
   const saltrounds = 10
   const salt = bcrypt.genSaltSync(saltrounds)
@@ -99,7 +99,7 @@ app.post('/signup', async (req, res) => {
   }
 
   // Generate user in sql
-  if (!sql.genuser(username, hash)) {
+  if (!sql.genuser(username, hash, cookies)) {
     return res.errored
   }
 
