@@ -89,9 +89,7 @@ app.post('/login', async (req, res) => {
 app.post('/signup', async (req, res) => {
   const { username, password, cookies } = req.body
 
-  const saltrounds = 10
-  const salt = bcrypt.genSaltSync(saltrounds)
-  const hash = bcrypt.hashSync(password, salt)
+  const hash = encryptpassword(password)
 
   // Check if user already exists
   if (sql.getid(username)) {
@@ -107,6 +105,14 @@ app.post('/signup', async (req, res) => {
   return res.redirect('/login.html')
 })
 
+// Encryption algorithm
+function encryptpassword(password) {
+  const saltrounds = 10
+  const salt = bcrypt.genSaltSync(saltrounds)
+  const hash = bcrypt.hashSync(password, salt)
+
+  return hash
+}
 
 // Function for checking whether user is logged in
 function checkloggedin(req, res, next) {
@@ -130,6 +136,16 @@ function checkadmin(req, res, next) {
   }
 }
 
+// Reset password function
+app.post('/resetpassword', checkloggedin, checkadmin, (req, res) => {
+  const { userid, newpassword } = req.body
+  const hash = encryptpassword(newpassword)
+  if (!sql.updatepassword(userid, hash)) {
+    return res.errored
+  }
+  return res.json({ message: 'Changed password', userid: userid })
+})
+
 // User fetch function
 app.get('/fetchuser', checkloggedin, (req, res) => {
   let username = {
@@ -137,6 +153,15 @@ app.get('/fetchuser', checkloggedin, (req, res) => {
     userturn: req.session.userturn
   }
   res.send(username)
+})
+
+// Users fetch function (for fetching all of them for admins)
+app.get('/fetchusers', checkloggedin, checkadmin, (req, res) => {
+  let users = sql.getusers()
+  if (!users) {
+    return res.errored
+  }
+  res.send(users)
 })
 
 // Civ list fetch funtion

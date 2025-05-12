@@ -3,7 +3,7 @@ let users = []
 fetchusers()
 async function fetchusers() {
   try {
-    let response = await fetch('/fetchusers') //THIS DOES NOT EXIST
+    let response = await fetch('/fetchusers')
     let data = await response.json()
     users = data
 
@@ -30,6 +30,7 @@ function displayusers() {
       <th>Name</th>
       <th>Turn</th>
       <th>Admin</th>
+      <th>Cookies</th>
       <th>Reset password</th>
     </table>
   `
@@ -43,18 +44,31 @@ function displayuserselements() {
     if (user.admin == 0) {
       user.admin = "No"
     } else {
-      user.admin = "Yes
+      user.admin = "Yes"
     }
+    if (user.cookies == 0) {
+      user.cookies = "No"
+    } else {
+      user.cookies = "Yes"
+    }
+
     const row = document.createElement('tr')
+
     row.innerHTML = `
       <td>
         ${user.id}
+      </td>
+      <td>
+        ${user.name}
       </td>
       <td>
         ${user.turn}
       </td>
       <td>
         ${user.admin}
+      </td>
+      <td>
+        ${user.cookies}
       </td>
       <td>
         <input type="password" id="${user.id}-field" name="Reset password" placeholder="Reset password">
@@ -66,22 +80,21 @@ function displayuserselements() {
   })
 }
 
-function resetpassword(userid) {
-  let field = document.getElementById() //NOT FINISHED
-}
-
-
-async function togglemilitary(btnid, activeid) {
-  let btn = document.getElementById(btnid)
-  btn.classList.toggle("green")
+async function resetpassword(userid) {
+  const fieldid = userid + "-field"
+  const field = document.getElementById(fieldid)
+  const newpassword = field.value
 
   try {
-    await fetch('/togglemilitary', {
+    await fetch('/resetpassword', { // DOES NOT EXIST YET
       method: 'POST',
       headers: {
         'content-type': 'application/json'
       },
-      body: JSON.stringify({ activeid: activeid })
+      body: JSON.stringify({
+        userid: userid,
+        newpassword: newpassword
+      })
     })
   } catch (error) {
     console.log("Error", error)

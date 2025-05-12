@@ -25,6 +25,16 @@ export function getuser(userid) {
   return response[0]
 }
 
+export function getusers() {
+  const sqltext = 'select id, name, turn, admin, cookies from user'
+  const sql = db.prepare(sqltext)
+  const response = sql.all()
+  if (response.length == 0) {
+    return false
+  }
+  return response
+}
+
 export function genuser(username, password, cookies) {
   if (getid(username)) {
     return false
@@ -33,6 +43,13 @@ export function genuser(username, password, cookies) {
   const sqltext = 'insert into user (name, turn, password, admin, cookies) values (?, ?, ?, ?, ?)'
   const sql = db.prepare(sqltext)
   const response = sql.run(username, 0, password, 0, cookies)
+  return response
+}
+
+export function updatepassword(userid, newpassword) {
+  const sqltext = 'update user set password = ? where user.id = ?'
+  const sql = db.prepare(sqltext)
+  const response = sql.run(newpassword, userid)
   return response
 }
 
