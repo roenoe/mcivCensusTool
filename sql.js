@@ -128,3 +128,25 @@ function checkmilitarystatus(activeid) {
   return response[0].military
 }
 
+export function resetprogress(userid) { // FIX THIS AND MAKE SURE ONLY ONE QUERY RUNS AT ONCE
+  const sqlquery0 = ' DELETE FROM census ' +
+    ' WHERE census.activeid IN ( ' +
+    '     SELECT active.id ' +
+    '     FROM active ' +
+    '     JOIN user ON active.userid = user.id ' +
+    '     WHERE user.name = ? ' +
+    ' ); '
+  const sqlquery1 = '  ' +
+    ' DELETE FROM active ' +
+    ' WHERE active.userid IN( ' +
+    '       SELECT id ' +
+    '     FROM user ' +
+    '     WHERE name = ? ' +
+    ' ); '
+  const sqltext = sqlquery0 + sqlquery1
+  const sql = db.prepare(sqltext)
+  const response = sql.all(userid, userid)
+  return response
+}
+
+resetprogress(getid('test'))
