@@ -32,6 +32,7 @@ function displayusers() {
       <th>Admin</th>
       <th>Cookies</th>
       <th>Reset password</th>
+      <th>Manage user</th>
     </table>
   `
 
@@ -66,13 +67,18 @@ function displayuserselements() {
       </td>
       <td>
         ${user.admin}
+        <button onclick='toggleadmin(${user.id})' class="right">Toggle admin</button>
       </td>
       <td>
         ${user.cookies}
       </td>
       <td>
         <input type="password" id="${user.id}-field" name="Reset password" placeholder="Reset password">
-        <button onclick='resetpassword("${user.id}")'>Reset password</button>
+        <button onclick='resetpassword("${user.id}", "${user.name}")' class="right">Reset password</button>
+      </td>
+      <td>
+        <button onclick='deluser(${user.id}, "${user.name}")' class="red">Delete user</button>
+        <button onclick='resetprogress(${user.id}, "${user.name}")' class="red">Reset progress</button>
       </td>
 
     `
@@ -80,13 +86,73 @@ function displayuserselements() {
   })
 }
 
-async function resetpassword(userid) {
+async function toggleadmin(userid) {
+  try {
+    await fetch('/toggleadmin', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ userid: userid })
+    })
+  } catch (error) {
+    console.log("Error", error)
+  }
+  await fetchusers()
+}
+
+async function deluser(userid, username) {
+  let text = `Are you sure you want to delete ${username}? This action us permanent.`;
+  if (confirm(text) == false) {
+    return false
+  }
+
+  try {
+    await fetch('/deluser', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ userid: userid })
+    })
+  } catch (error) {
+    console.log("Error", error)
+  }
+  await fetchusers()
+}
+
+async function resetprogress(userid, username) {
+  let text = `Are you sure you want to reset ${username}'s data? This action is permanent.`;
+  if (confirm(text) == false) {
+    return false
+  }
+
+  try {
+    await fetch('/resetprogress', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ userid: userid })
+    })
+  } catch (error) {
+    console.log("Error", error)
+  }
+  await fetchusers()
+}
+
+async function resetpassword(userid, username) {
+  let text = `Are you sure you want to reset ${username}'s password?`;
+  if (confirm(text) == false) {
+    return false
+  }
+
   const fieldid = userid + "-field"
   const field = document.getElementById(fieldid)
   const newpassword = field.value
 
   try {
-    await fetch('/resetpassword', { // DOES NOT EXIST YET
+    await fetch('/resetpassword', {
       method: 'POST',
       headers: {
         'content-type': 'application/json'

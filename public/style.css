@@ -19,10 +19,6 @@ th {
   padding: 4px;
 }
 
-/*tr:nth-child(even) {
-  background-color: #dddddd;
-}*/
-
 .destruct {
   background-color: red;
   position: absolute;
@@ -32,6 +28,18 @@ th {
 
 .green {
   background-color: green;
+}
+
+.red {
+  background-color: red;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
 }
 
 .Minoa {

@@ -114,7 +114,6 @@ export function togglemilitary(activeid) {
   let response = ""
   if (checkmilitarystatus(activeid)) {
     response = sql.run(0, activeid)
-    console.log("Happen")
   } else {
     response = sql.run(1, activeid)
   }
@@ -128,25 +127,55 @@ function checkmilitarystatus(activeid) {
   return response[0].military
 }
 
-export function resetprogress(userid) { // FIX THIS AND MAKE SURE ONLY ONE QUERY RUNS AT ONCE
+export function toggleadmin(userid) {
+  const sqltext = 'update user set admin = ? where id = ?'
+  const sql = db.prepare(sqltext)
+  let response = ""
+  if (checkadminstatus(userid)) {
+    response = sql.run(0, userid)
+  } else {
+    response = sql.run(1, userid)
+  }
+  return response
+}
+
+function checkadminstatus(userid) {
+  const sqltext = 'select admin from user where id = ?'
+  const sql = db.prepare(sqltext)
+  const response = sql.all(userid)
+  return response[0].admin
+}
+
+export function resetprogress(userid) { // MAKE SURE IT SETS YOUR TURN COUNTER TO 0
   const sqlquery0 = ' DELETE FROM census ' +
     ' WHERE census.activeid IN ( ' +
     '     SELECT active.id ' +
     '     FROM active ' +
     '     JOIN user ON active.userid = user.id ' +
-    '     WHERE user.name = ? ' +
+    '     WHERE user.id = ? ' +
     ' ); '
   const sqlquery1 = '  ' +
     ' DELETE FROM active ' +
     ' WHERE active.userid IN( ' +
     '       SELECT id ' +
     '     FROM user ' +
-    '     WHERE name = ? ' +
+    '     WHERE user.id = ? ' +
     ' ); '
-  const sqltext = sqlquery0 + sqlquery1
-  const sql = db.prepare(sqltext)
-  const response = sql.all(userid, userid)
+  var response = []
+  const sqltext = [sqlquery0, sqlquery1]
+
+  for (var i = 0; i < sqltext.length; i++) {
+    const sql = db.prepare(sqltext[i])
+    response.push(sql.run(userid))
+  }
   return response
+
 }
 
-resetprogress(getid('test'))
+export function deluser(userid) {
+  resetprogress(userid)
+  const sqltext = 'delete from user where user.id = ?'
+  const sql = db.prepare(sqltext)
+  const response = sql.run(userid)
+  return response
+}

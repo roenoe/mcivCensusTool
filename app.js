@@ -146,6 +146,39 @@ app.post('/resetpassword', checkloggedin, checkadmin, (req, res) => {
   return res.json({ message: 'Changed password', userid: userid })
 })
 
+// Reset progress function
+app.post('/resetprogress', checkloggedin, (req, res) => {
+  let userid = req.session.userid
+  if ((req.session.admin) && (typeof req.body.userid !== 'undefined')) {
+    userid = req.body.userid
+  }
+  sql.resetprogress(userid)
+})
+
+app.post('/deluser', checkloggedin, (req, res) => {
+  let userid = req.session.userid
+  if (req.session.admin) {
+    if (typeof req.body.userid !== 'undefined') {
+      userid = req.body.userid
+    }
+  }
+  sql.deluser(userid)
+})
+
+// Toggle admin function
+app.post('/toggleadmin', checkloggedin, checkadmin, (req, res) => {
+  const { userid } = req.body
+  const toggled = sql.toggleadmin(userid)
+  console.log(toggled)
+
+  if (!toggled) {
+    return res.json({ error: 'Failed to toggle admin' })
+  } else {
+    return res.json({ message: 'Toggled admin', userid: userid })
+  }
+
+})
+
 // User fetch function
 app.get('/fetchuser', checkloggedin, (req, res) => {
   let username = {
