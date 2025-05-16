@@ -26,14 +26,17 @@ app.use(session({
 const pathstocheck = [
   '/',
   '/index.html',
-  '/admin.html',
 ]
 for (var i = 0; i < pathstocheck.length; i++) {
   console.log("Checking path:", pathstocheck[i])
   app.get(pathstocheck[i], checkloggedin, (req, res) => {
-    return res.sendFile(path.join(staticPath))
+    const filename = path.basename(pathstocheck[i])
+    return res.sendFile(path.join(staticPath, filename))
   })
 }
+app.get('/account.html', checkloggedin, (req, res) => {
+  return res.sendFile(path.join(staticPath, 'account.html'))
+})
 
 
 // Make sure the user is admin
@@ -42,8 +45,8 @@ const pathstocheckadmin = [
 ]
 for (var i = 0; i < pathstocheckadmin.length; i++) {
   console.log("Checking path:", pathstocheckadmin[i])
-  app.get(pathstocheckadmin[i], checkadmin, (req, res) => {
-    return res.sendFile(path.join(staticPath))
+  app.get(pathstocheckadmin[i], checkloggedin, checkadmin, (req, res) => {
+    return res.sendFile(path.join(staticPath, 'admin.html'))
   })
 }
 
@@ -77,12 +80,18 @@ app.post('/login', async (req, res) => {
     req.session.userid = user.id
     req.session.userturn = user.turn
     req.session.admin = user.admin
+    req.session.usercookies = user.cookies
   } else {
     return res.status(401).send('Invalid username or password')
   }
 
   // Redirect user to home page
   return res.redirect('/')
+})
+
+// Admin redirection
+app.get('/admin', (req, res) => {
+  res.redirect('/admin.html')
 })
 
 // Signup function
@@ -116,6 +125,8 @@ function encryptpassword(password) {
 
 // Function for checking whether user is logged in
 function checkloggedin(req, res, next) {
+  console.log("checkloggedin")
+  console.log("Session:", req.session)
   if (req.session.loggedin) {
     console.log('Logged in')
     return next()
@@ -127,6 +138,8 @@ function checkloggedin(req, res, next) {
 
 // Function for checking whether user is admin
 function checkadmin(req, res, next) {
+  console.log("checkadmin")
+  console.log("Session:", req.session)
   if (req.session.admin) {
     console.log('Admin')
     return next()
@@ -148,11 +161,15 @@ app.post('/resetpassword', checkloggedin, checkadmin, (req, res) => {
 
 // Reset progress function
 app.post('/resetprogress', checkloggedin, (req, res) => {
+  req.session.userturn = 0
+
   let userid = req.session.userid
   if ((req.session.admin) && (typeof req.body.userid !== 'undefined')) {
     userid = req.body.userid
   }
+
   sql.resetprogress(userid)
+  return res.json({ message: 'Progress reset', userturn: 0 });
 })
 
 app.post('/deluser', checkloggedin, (req, res) => {
@@ -163,6 +180,11 @@ app.post('/deluser', checkloggedin, (req, res) => {
     }
   }
   sql.deluser(userid)
+  if (req.session.userid == userid) {
+    res.redirect('/logout')
+  } else {
+    return res.json({ message: 'User deleted', userid: userid });
+  }
 })
 
 // Toggle admin function
@@ -183,7 +205,8 @@ app.post('/toggleadmin', checkloggedin, checkadmin, (req, res) => {
 app.get('/fetchuser', checkloggedin, (req, res) => {
   let username = {
     username: req.session.username,
-    userturn: req.session.userturn
+    userturn: req.session.userturn,
+    usercookies: req.session.usercookies
   }
   res.send(username)
 })

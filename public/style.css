@@ -19,6 +19,10 @@ th {
   padding: 4px;
 }
 
+a {
+  color: cyan;
+}
+
 .destruct {
   background-color: red;
   position: absolute;

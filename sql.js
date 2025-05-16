@@ -161,8 +161,9 @@ export function resetprogress(userid) { // MAKE SURE IT SETS YOUR TURN COUNTER T
     '     FROM user ' +
     '     WHERE user.id = ? ' +
     ' ); '
+  const sqlquery2 = 'update user set turn = 0 where user.id = ?'
   var response = []
-  const sqltext = [sqlquery0, sqlquery1]
+  const sqltext = [sqlquery0, sqlquery1, sqlquery2]
 
   for (var i = 0; i < sqltext.length; i++) {
     const sql = db.prepare(sqltext[i])
