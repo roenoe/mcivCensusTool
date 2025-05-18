@@ -18,9 +18,9 @@ async function fetchuser() {
 function displaywelcome(username, userturn, usercookies) {
   let cookietext = ""
   if (usercookies) {
-    cookietext = "Cookies are enable for your account."
+    cookietext = "Cookies are currently enabled for your account."
   } else {
-    cookietext = "Cookies are disabled for your account."
+    cookietext = "Cookies are currently disabled for your account."
   }
   welcome.innerHTML = `
     <p>Welcome to MCIV Census Tool, ${username}.</p>

@@ -201,6 +201,22 @@ app.post('/toggleadmin', checkloggedin, checkadmin, (req, res) => {
 
 })
 
+// Toggle cookies function
+app.post('/togglecookies', checkloggedin, (req, res) => {
+  const userid = req.session.userid
+  const toggled = sql.togglecookies(userid)
+  console.log(toggled)
+
+  req.session.usercookies = sql.checkcookiestatus(userid)
+
+  if (!toggled) {
+    return res.json({ error: 'Failed to toggle cookies' })
+  } else {
+    return res.json({ message: 'Toggled cookies', userid: userid })
+  }
+
+})
+
 // User fetch function
 app.get('/fetchuser', checkloggedin, (req, res) => {
   let username = {

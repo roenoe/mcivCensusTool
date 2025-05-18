@@ -146,6 +146,25 @@ function checkadminstatus(userid) {
   return response[0].admin
 }
 
+export function togglecookies(userid) {
+  const sqltext = 'update user set cookies = ? where id = ?'
+  const sql = db.prepare(sqltext)
+  let response = ""
+  if (checkcookiestatus(userid)) {
+    response = sql.run(0, userid)
+  } else {
+    response = sql.run(1, userid)
+  }
+  return response
+}
+
+export function checkcookiestatus(userid) {
+  const sqltext = 'select cookies from user where id = ?'
+  const sql = db.prepare(sqltext)
+  const response = sql.all(userid)
+  return response[0].cookies
+}
+
 export function resetprogress(userid) { // MAKE SURE IT SETS YOUR TURN COUNTER TO 0
   const sqlquery0 = ' DELETE FROM census ' +
     ' WHERE census.activeid IN ( ' +

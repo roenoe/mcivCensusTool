@@ -11,6 +11,7 @@ async function resetprogress() {
   } catch (error) {
     console.log("Error", error)
   }
+  fetchuser()
 }
 
 async function deluser() {
@@ -26,4 +27,16 @@ async function deluser() {
   } catch (error) {
     console.log("Error", error)
   }
+  fetchuser()
+}
+
+async function togglecookies() {
+  try {
+    await fetch('/togglecookies', {
+      method: 'POST',
+    })
+  } catch (error) {
+    console.log("Error", error)
+  }
+  fetchuser()
 }
