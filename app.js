@@ -37,6 +37,9 @@ for (var i = 0; i < pathstocheck.length; i++) {
 app.get('/account.html', checkloggedin, (req, res) => {
   return res.sendFile(path.join(staticPath, 'account.html'))
 })
+app.get('/input.html', checkloggedin, (req, res) => {
+  return res.sendFile(path.join(staticPath, 'input.html'))
+})
 
 
 // Make sure the user is admin

@@ -1,6 +1,10 @@
 let lastcensus = []
 
 fetchlastcensus()
+setInterval(function() {
+  fetchlastcensus()
+}, 3000);
+
 async function fetchlastcensus() {
   try {
     let response = await fetch('/fetchlastcensus')

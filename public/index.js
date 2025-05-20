@@ -9,23 +9,16 @@ async function fetchuser() {
 
     user = data
 
-    displaywelcome(data.username, data.userturn, data.usercookies)
+    displaywelcome(data.username, data.userturn)
   } catch (error) {
     console.log("Error:", error)
   }
 }
 
-function displaywelcome(username, userturn, usercookies) {
-  let cookietext = ""
-  if (usercookies) {
-    cookietext = "Cookies are currently enabled for your account."
-  } else {
-    cookietext = "Cookies are currently disabled for your account."
-  }
+function displaywelcome(username, userturn) {
   welcome.innerHTML = `
     <p>Welcome to MCIV Census Tool, ${username}.</p>
     <p>You are on turn ${userturn}.</p>
-    <p>${cookietext}</p>
   `
 }
 
